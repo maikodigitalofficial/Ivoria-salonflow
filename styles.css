@@ -85,39 +85,9 @@ img {
    ANIMATION KEYFRAMES
    ============================================ */
 
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(50px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInLeft {
-    from { opacity: 0; transform: translateX(-60px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes fadeInRight {
-    from { opacity: 0; transform: translateX(60px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
 @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-12px); }
-}
-
-@keyframes marqueeLeft {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-
-@keyframes marqueeRight {
-    0% { transform: translateX(-50%); }
-    100% { transform: translateX(0); }
-}
-
-@keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
 }
 
 @keyframes whatsappPulse {
@@ -136,107 +106,6 @@ img {
     70% { transform: translate(0%, 15%); }
     80% { transform: translate(3%, 35%); }
     90% { transform: translate(-10%, 10%); }
-}
-
-/* ============================================
-   SCROLL REVEAL
-   ============================================ */
-
-.reveal {
-    opacity: 0;
-    transform: translateY(50px);
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: opacity, transform;
-}
-
-.reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.reveal-up { transform: translateY(60px); }
-.reveal-left { transform: translateX(-60px); }
-.reveal-right { transform: translateX(60px); }
-
-.reveal-up.revealed,
-.reveal-left.revealed,
-.reveal-right.revealed {
-    opacity: 1;
-    transform: translate(0);
-}
-
-.delay-100 { transition-delay: 0.1s; }
-.delay-200 { transition-delay: 0.2s; }
-.delay-300 { transition-delay: 0.3s; }
-.delay-400 { transition-delay: 0.4s; }
-
-/* ============================================
-   TOP BAR
-   ============================================ */
-
-.top-bar {
-    background-color: var(--secondary);
-    padding: 12px 0;
-    position: relative;
-    z-index: 101;
-}
-
-.top-bar-container {
-    max-width: var(--container);
-    margin: 0 auto;
-    padding: 0 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-    color: rgba(255,255,255,0.6);
-    letter-spacing: 0.5px;
-}
-
-.top-bar-left {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.top-bar-left i {
-    color: var(--gold);
-    margin-right: 6px;
-    font-size: 11px;
-}
-
-.top-bar-left .divider {
-    color: rgba(255,255,255,0.2);
-}
-
-.top-bar-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.social-icons {
-    display: flex;
-    gap: 12px;
-}
-
-.social-icons a {
-    color: rgba(255,255,255,0.5);
-    font-size: 12px;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.social-icons a:hover {
-    color: var(--gold);
-    border-color: var(--gold);
-    transform: translateY(-2px);
 }
 
 /* ============================================
@@ -1557,7 +1426,7 @@ BOOKING CTA SECTION
 .footer {
     background: var(--secondary);
     color: rgba(255,255,255,0.5);
-    padding: 100px 0 0;
+    padding: 32px 0;
     position: relative;
 }
 
@@ -1577,126 +1446,30 @@ BOOKING CTA SECTION
     padding: 0 40px;
 }
 
-.footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 60px;
-    margin-bottom: 80px;
-}
-
-.footer-brand .logo {
-    margin-bottom: 24px;
-}
-
-.footer-brand .logo-icon {
-    color: var(--primary);
-}
-
-.footer-brand .logo-text .brand {
-    color: white;
-}
-
-.footer-brand p {
-    font-size: 14px;
-    line-height: 1.8;
-    max-width: 320px;
-    margin-bottom: 24px;
-}
-
-.footer-hours {
-    margin-top: 24px;
-}
-
-.footer-hours h4 {
-    font-size: 13px;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.footer-hours h4 i {
-    color: var(--gold);
-    font-size: 12px;
-}
-
-.footer-hours ul {
-    list-style: none;
-}
-
-.footer-hours li {
+.footer-simple {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    align-items: center;
+    gap: 24px;
 }
 
-.footer-links h4 {
-    font-size: 13px;
+.footer-brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
     font-weight: 600;
     color: white;
-    margin-bottom: 24px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
 }
 
-.footer-links ul {
-    list-style: none;
+.footer-social-simple {
     display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.footer-links a {
-    font-size: 14px;
-    color: rgba(255,255,255,0.5);
-    transition: var(--transition);
-    display: inline-flex;
+    gap: 16px;
     align-items: center;
-    position: relative;
 }
 
-.footer-links a i {
-    margin-right: 8px;
-    color: var(--gold);
-    font-size: 11px;
-}
-
-.footer-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--gold);
-    transition: width 0.3s;
-}
-
-.footer-links a:hover {
-    color: var(--gold);
-    transform: translateX(4px);
-}
-
-.footer-links a:hover::after {
-    width: 100%;
-}
-
-.footer-social {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.footer-social a {
-    width: 40px;
-    height: 40px;
+.footer-social-simple a {
+    width: 36px;
+    height: 36px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 50%;
@@ -1708,57 +1481,17 @@ BOOKING CTA SECTION
     transition: var(--transition);
 }
 
-.footer-social a:hover {
+.footer-social-simple a:hover {
     background: var(--primary);
     border-color: var(--primary);
     color: white;
     transform: translateY(-2px);
 }
 
-.footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 32px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.footer-bottom-left p {
+.footer-copyright {
     font-size: 13px;
     color: rgba(255,255,255,0.4);
-}
-
-.craft-badge {
-    font-size: 12px;
-    color: var(--gold);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    letter-spacing: 1px;
-}
-
-.craft-badge i {
-    font-size: 10px;
-}
-
-.back-to-top {
-    width: 48px;
-    height: 48px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 14px;
-    transition: var(--transition);
-}
-
-.back-to-top:hover {
-    background: var(--primary);
-    border-color: var(--primary);
-    transform: translateY(-4px);
+    white-space: nowrap;
 }
 
 /* ============================================
@@ -1892,28 +1625,19 @@ BOOKING CTA SECTION
         margin: 0 auto;
     }
 
-    .shop-grid {
-        grid-template-columns: 1fr;
-    }
-
     .contact-grid {
         grid-template-columns: 1fr;
         gap: 60px;
     }
 
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
+    .footer-simple {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
     }
 
-    .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, 250px);
-    }
-
-    .gallery-item.large {
-        grid-column: span 2;
-        grid-row: span 1;
+    .footer-copyright {
+        white-space: normal;
     }
 }
 
@@ -1955,22 +1679,6 @@ BOOKING CTA SECTION
 }
 
 @media (max-width: 768px) {
-    .top-bar-container {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-        padding: 0 20px;
-    }
-
-    .top-bar-left {
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .top-bar-left .divider {
-        display: none;
-    }
-
     .hero-title {
         font-size: 36px;
     }
@@ -1991,37 +1699,6 @@ BOOKING CTA SECTION
 
     .stat-item {
         padding: 14px;
-    }
-
-    .testimonial-card {
-        width: 320px;
-        min-width: 320px;
-        padding: 24px;
-    }
-
-    .testimonial-card .quote {
-        font-size: 15px;
-    }
-
-    .footer-grid {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 30px;
-    }
-
-    .footer-brand p {
-        max-width: none;
-    }
-
-    .footer-hours {
-        max-width: 300px;
-        margin: 24px auto 0;
-    }
-
-    .footer-bottom {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
     }
 
     .contact-form-wrapper {
@@ -2065,16 +1742,6 @@ BOOKING CTA SECTION
         padding: 0 24px;
     }
 
-    .gallery-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(6, 250px);
-    }
-
-    .gallery-item.large {
-        grid-column: span 1;
-        grid-row: span 1;
-    }
-
     .booking-buttons {
         flex-direction: column;
     }
@@ -2088,9 +1755,5 @@ BOOKING CTA SECTION
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
-    }
-
-    .marquee-track {
-        animation: none !important;
     }
 }

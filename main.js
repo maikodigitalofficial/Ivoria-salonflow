@@ -5,61 +5,6 @@
 // ============================================
 
 // ============================================
-// SCROLL REVEAL
-// ============================================
-
-class ScrollReveal {
-    constructor(options = {}) {
-        this.options = {
-            threshold: options.threshold || 0.1,
-            rootMargin: options.rootMargin || '0px 0px -60px 0px',
-            once: options.once !== false
-        };
-
-        this.observer = new IntersectionObserver(
-            this.handleIntersect.bind(this),
-            {
-                threshold: this.options.threshold,
-                rootMargin: this.options.rootMargin
-            }
-        );
-
-        this.init();
-    }
-
-    init() {
-        const revealElements = document.querySelectorAll('.reveal');
-        revealElements.forEach(el => {
-            if (!el.dataset.originalTransition) {
-                el.dataset.originalTransition = el.style.transition || '';
-            }
-            this.observer.observe(el);
-        });
-    }
-
-    handleIntersect(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-                if (this.options.once) {
-                    this.observer.unobserve(entry.target);
-                }
-            } else if (!this.options.once) {
-                entry.target.classList.remove('revealed');
-            }
-        });
-    }
-
-    refresh() {
-        this.init();
-    }
-
-    destroy() {
-        this.observer.disconnect();
-    }
-}
-
-// ============================================
 // MOBILE MENU
 // ============================================
 
@@ -227,7 +172,7 @@ class ContactForm {
         phoneInput?.addEventListener('input', (e) => this.formatPhone(e));
     }
 
-    formatPhone(e) {
+        formatPhone(e) {
         let value = e.target.value.replace(/\D/g, '');
         if (value.startsWith('0')) {
             value = '254' + value.slice(1);
@@ -272,85 +217,6 @@ class ContactForm {
     }
 }
 
-
-// ============================================
-// PARALLAX EFFECT
-// ============================================
-
-class ParallaxEffect {
-    constructor() {
-        this.heroImage = document.querySelector('.hero-image img');
-        this.heroBg = document.querySelector('.hero-bg-pattern');
-
-        this.init();
-    }
-
-    init() {
-        window.addEventListener('scroll', () => this.handleScroll());
-    }
-
-    handleScroll() {
-        const scrolled = window.pageYOffset;
-
-        if (this.heroImage && scrolled < 800) {
-            this.heroImage.style.transform = `translateY(${scrolled * 0.12}px) scale(1.05)`;
-        }
-
-        if (this.heroBg && scrolled < 800) {
-            this.heroBg.style.transform = `translateY(${scrolled * 0.06}px)`;
-        }
-    }
-}
-
-// ============================================
-// BACK TO TOP
-// ============================================
-
-class BackToTop {
-    constructor() {
-        this.button = document.querySelector('.back-to-top');
-
-        this.init();
-    }
-
-    init() {
-        if (!this.button) return;
-
-        this.button.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-}
-
-// ============================================
-// LAZY LOADING
-// ============================================
-
-class LazyLoader {
-    constructor() {
-        this.images = document.querySelectorAll('img[loading="lazy"]');
-
-        this.init();
-    }
-
-    init() {
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.classList.add('loaded');
-                        imageObserver.unobserve(img);
-                    }
-                });
-            });
-
-            this.images.forEach(img => imageObserver.observe(img));
-        }
-    }
-}
-
 // ============================================
 // FORM INPUT ANIMATIONS
 // ============================================
@@ -377,48 +243,22 @@ class FormAnimations {
 }
 
 // ============================================
-// GALLERY LIGHTBOX
+// BACK TO TOP
 // ============================================
 
-class GalleryLightbox {
+class BackToTop {
     constructor() {
-        this.galleryItems = document.querySelectorAll('.gallery-item');
+        this.button = document.querySelector('.back-to-top');
+
         this.init();
     }
 
     init() {
-        this.galleryItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const img = item.querySelector('img');
-                if (img) {
-                    this.openLightbox(img.src, img.alt);
-                }
-            });
-        });
-    }
+        if (!this.button) return;
 
-    openLightbox(src, alt) {
-        const lightbox = document.createElement('div');
-        lightbox.className = 'lightbox';
-        lightbox.innerHTML = `
-            <div class="lightbox-overlay"></div>
-            <div class="lightbox-content">
-                <img src="${src}" alt="${alt}">
-                <button class="lightbox-close"><i class="fas fa-times"></i></button>
-            </div>
-        `;
-
-        document.body.appendChild(lightbox);
-        document.body.style.overflow = 'hidden';
-
-        lightbox.querySelector('.lightbox-close').addEventListener('click', () => {
-            lightbox.remove();
-            document.body.style.overflow = '';
-        });
-
-        lightbox.querySelector('.lightbox-overlay').addEventListener('click', () => {
-            lightbox.remove();
-            document.body.style.overflow = '';
+        this.button.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 }
@@ -428,50 +268,13 @@ class GalleryLightbox {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    window.scrollReveal = new ScrollReveal({
-        threshold: 0.1,
-        rootMargin: '0px 0px -60px 0px',
-        once: true
-    });
-
     new MobileMenu();
     new NavbarScroll();
     new SmoothScroll();
     new ActiveNavLink();
     new ContactForm();
-    new ShopShowMore();
-    new ParallaxEffect();
-    new BackToTop();
-    new LazyLoader();
     new FormAnimations();
-    new GalleryLightbox();
+    new BackToTop();
 
     document.body.classList.add('loaded');
 });
-
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-function throttle(func, limit) {
-    let inThrottle;
-    return function(...args) {
-        if (!inThrottle) {
-            func.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
-}
