@@ -43,6 +43,8 @@ class MobileMenu {
         this.navMenu.classList.add('active');
         this.overlay?.classList.add('active');
         document.body.style.overflow = 'hidden';
+        // FIXED: Prevent horizontal scroll lock from breaking
+        document.body.style.touchAction = 'pan-y';
     }
 
     close() {
@@ -50,17 +52,19 @@ class MobileMenu {
         this.navMenu.classList.remove('active');
         this.overlay?.classList.remove('active');
         document.body.style.overflow = '';
+        document.body.style.touchAction = '';
     }
 }
 
 // ============================================
-// NAVBAR SCROLL EFFECT
+// NAVBAR SCROLL EFFECT — FIXED: Use passive listener + RAF
 // ============================================
 
 class NavbarScroll {
     constructor() {
         this.navbar = document.getElementById('navbar');
         this.lastScroll = 0;
+        this.ticking = false;
 
         this.init();
     }
@@ -68,10 +72,22 @@ class NavbarScroll {
     init() {
         if (!this.navbar) return;
 
-        window.addEventListener('scroll', () => this.handleScroll());
+        // FIXED: Use passive event listener for better scroll performance
+        window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
     }
 
     handleScroll() {
+        // FIXED: Use requestAnimationFrame to prevent scroll jank
+        if (!this.ticking) {
+            window.requestAnimationFrame(() => {
+                this.updateNavbar();
+                this.ticking = false;
+            });
+            this.ticking = true;
+        }
+    }
+
+    updateNavbar() {
         const currentScroll = window.pageYOffset;
 
         if (currentScroll > 50) {
@@ -116,22 +132,35 @@ class SmoothScroll {
 }
 
 // ============================================
-// ACTIVE NAV LINK ON SCROLL
+// ACTIVE NAV LINK ON SCROLL — FIXED: Passive + RAF
 // ============================================
 
 class ActiveNavLink {
     constructor() {
         this.sections = document.querySelectorAll('section[id]');
         this.navLinks = document.querySelectorAll('.nav-menu a');
+        this.ticking = false;
 
         this.init();
     }
 
     init() {
-        window.addEventListener('scroll', () => this.handleScroll());
+        // FIXED: Passive listener for performance
+        window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
     }
 
     handleScroll() {
+        // FIXED: RAF to prevent layout thrashing
+        if (!this.ticking) {
+            window.requestAnimationFrame(() => {
+                this.updateActiveLink();
+                this.ticking = false;
+            });
+            this.ticking = true;
+        }
+    }
+
+    updateActiveLink() {
         const scrollPosition = window.pageYOffset + 180;
 
         this.sections.forEach(section => {
@@ -172,7 +201,7 @@ class ContactForm {
         phoneInput?.addEventListener('input', (e) => this.formatPhone(e));
     }
 
-        formatPhone(e) {
+    formatPhone(e) {
         let value = e.target.value.replace(/\D/g, '');
         if (value.startsWith('0')) {
             value = '254' + value.slice(1);

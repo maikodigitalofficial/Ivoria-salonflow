@@ -1,7 +1,6 @@
 /* ============================================
    IVORIA — LUXURY BEAUTY SALON STYLES
-   Premium Hair, Beauty & Nail Experience
-   Nairobi, Kenya
+   MOBILE-PERFORMANCE OPTIMIZED VERSION
    ============================================ */
 
 /* CSS Variables */
@@ -48,8 +47,12 @@
     --container: 1280px;
 }
 
-/* Reset & Base */
-* {
+/* ============================================
+   CRITICAL FIXES: GLOBAL RESET & BASE
+   ============================================ */
+
+/* FIXED: Apply to ALL elements to prevent any overflow */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -58,16 +61,22 @@
 html {
     scroll-behavior: smooth;
     font-size: 16px;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-white);
     color: var(--text-body);
-    overflow-x: hidden;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
 }
 
 a {
@@ -109,24 +118,39 @@ img {
 }
 
 /* ============================================
-   NAVIGATION
+   NAVIGATION — FIXED: No backdrop-filter, no sticky
    ============================================ */
 
+/* CRITICAL FIX: Changed from sticky to fixed with transform for GPU compositing */
 .navbar {
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    /* FIXED: Removed backdrop-filter blur - major mobile GPU killer */
+    background: rgba(255,255,255,0.98);
     padding: 0;
-    position: sticky;
+    /* FIXED: Use fixed instead of sticky to avoid compositing issues */
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
     transition: var(--transition);
     border-bottom: 1px solid transparent;
+    /* GPU layer for smooth rendering */
+    transform: translateZ(0);
+    will-change: transform;
+    /* Prevent horizontal expansion */
+    max-width: 100vw;
+    /* Contain layout to prevent recalculation of entire page */
+
 }
 
 .navbar.scrolled {
     border-bottom-color: rgba(26,26,46,0.06);
     box-shadow: var(--shadow-sm);
+}
+
+/* FIXED: Add padding-top to body to account for fixed navbar */
+body {
+    padding-top: 80px;
 }
 
 .nav-container {
@@ -137,6 +161,8 @@ img {
     justify-content: space-between;
     align-items: center;
     height: 80px;
+    /* Prevent overflow */
+    max-width: 100%;
 }
 
 .logo {
@@ -230,6 +256,7 @@ img {
     text-transform: uppercase;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .nav-cta::before {
@@ -302,7 +329,7 @@ img {
     width: 100%;
     height: 100%;
     background: rgba(26,26,46,0.4);
-    backdrop-filter: blur(8px);
+    /* FIXED: Removed backdrop-filter blur */
     z-index: 98;
     opacity: 0;
     transition: opacity 0.4s;
@@ -314,7 +341,7 @@ img {
 }
 
 /* ============================================
-   HERO SECTION
+   HERO SECTION — FIXED: No overflow hidden, use contain
    ============================================ */
 
 .hero {
@@ -342,20 +369,14 @@ img {
 }
 
 .hero-noise {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    animation: grain 8s steps(10) infinite;
-    pointer-events: none;
-    opacity: 0.5;
+    display: none;
 }
 
 .hero-content {
     position: relative;
     z-index: 2;
+    /* Allow shrinking */
+    min-width: 0;
 }
 
 .hero-eyebrow {
@@ -385,6 +406,10 @@ img {
     color: var(--text-dark);
     margin-bottom: 28px;
     letter-spacing: -0.02em;
+    /* FIXED: Prevent text overflow */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .hero-title .highlight {
@@ -432,6 +457,7 @@ img {
     text-transform: uppercase;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .btn-primary::before {
@@ -552,6 +578,7 @@ img {
     align-items: flex-end;
     height: 100%;
     min-height: 600px;
+    min-width: 0;
 }
 
 .hero-image-frame {
@@ -632,7 +659,15 @@ img {
 .section-container {
     max-width: var(--container);
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 24px;
+    width: 100%;
+}
+
+@media (min-width: 769px) {
+    .section-container {
+        max-width: var(--container);
+        padding: 0 40px;
+    }
 }
 
 .section-header {
@@ -669,6 +704,9 @@ img {
     line-height: 1.15;
     margin-bottom: 20px;
     letter-spacing: -0.01em;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .section-title .highlight {
@@ -693,7 +731,8 @@ img {
     padding: 140px 0;
     background: var(--bg-cream);
     position: relative;
-    overflow: hidden;
+    /* FIXED: Use contain instead of overflow */
+
 }
 
 .about-section::before {
@@ -705,6 +744,8 @@ img {
     height: 500px;
     background: radial-gradient(circle, rgba(200,85,61,0.04) 0%, transparent 70%);
     border-radius: 50%;
+    /* Prevent from causing overflow */
+    pointer-events: none;
 }
 
 .about-grid {
@@ -716,6 +757,7 @@ img {
 
 .about-image-wrapper {
     position: relative;
+    min-width: 0;
 }
 
 .about-image-frame {
@@ -804,6 +846,7 @@ img {
 .about-content {
     position: relative;
     z-index: 2;
+    min-width: 0;
 }
 
 .about-content .section-title {
@@ -816,6 +859,8 @@ img {
     color: var(--text-muted);
     line-height: 1.8;
     margin-bottom: 20px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .about-text.lead {
@@ -869,6 +914,8 @@ img {
     font-size: 14px;
     color: var(--text-muted);
     line-height: 1.6;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .about-cta {
@@ -883,6 +930,7 @@ img {
     padding: 140px 0;
     background: var(--bg-white);
     position: relative;
+
 }
 
 .services-section::before {
@@ -909,6 +957,7 @@ img {
     transition: var(--transition-slow);
     position: relative;
     overflow: hidden;
+    min-width: 0;
 }
 
 .service-card::before {
@@ -977,6 +1026,8 @@ img {
     font-weight: 600;
     color: var(--text-dark);
     margin-bottom: 12px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .service-card p {
@@ -984,6 +1035,8 @@ img {
     color: var(--text-muted);
     line-height: 1.7;
     margin-bottom: 24px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .service-link {
@@ -1011,16 +1064,15 @@ img {
     transform: translateX(4px);
 }
 
-
 /* ============================================
-BOOKING CTA SECTION
-============================================ */
+   BOOKING CTA SECTION
+   ============================================ */
 
 .booking-cta-section {
     padding: 120px 0;
     background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
     position: relative;
-    overflow: hidden;
+
     text-align: center;
 }
 
@@ -1043,6 +1095,7 @@ BOOKING CTA SECTION
     height: 400px;
     background: radial-gradient(circle, rgba(200,85,61,0.08) 0%, transparent 70%);
     border-radius: 50%;
+    pointer-events: none;
 }
 
 .booking-cta-content {
@@ -1105,6 +1158,7 @@ BOOKING CTA SECTION
 .contact-section {
     padding: 140px 0;
     background: linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-white) 100%);
+
 }
 
 .contact-grid {
@@ -1120,6 +1174,7 @@ BOOKING CTA SECTION
     padding: 56px;
     box-shadow: var(--shadow-lg);
     border: 1px solid rgba(26,26,46,0.04);
+    min-width: 0;
 }
 
 .form-header {
@@ -1152,6 +1207,7 @@ BOOKING CTA SECTION
 
 .form-group {
     position: relative;
+    min-width: 0;
 }
 
 .form-group.full-width {
@@ -1298,6 +1354,7 @@ BOOKING CTA SECTION
 /* Contact Info Side */
 .contact-info-wrapper {
     padding-top: 20px;
+    min-width: 0;
 }
 
 .info-header h3 {
@@ -1332,6 +1389,7 @@ BOOKING CTA SECTION
     box-shadow: var(--shadow-sm);
     border: 1px solid rgba(26,26,46,0.04);
     transition: var(--transition);
+    min-width: 0;
 }
 
 .info-card:hover {
@@ -1362,6 +1420,7 @@ BOOKING CTA SECTION
 .info-text {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .info-text .label {
@@ -1379,6 +1438,8 @@ BOOKING CTA SECTION
     font-weight: 600;
     color: var(--text-dark);
     transition: color 0.3s;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .info-text a:hover {
@@ -1428,6 +1489,7 @@ BOOKING CTA SECTION
     color: rgba(255,255,255,0.5);
     padding: 32px 0;
     position: relative;
+
 }
 
 .footer::before {
@@ -1444,6 +1506,7 @@ BOOKING CTA SECTION
     max-width: var(--container);
     margin: 0 auto;
     padding: 0 40px;
+    width: 100%;
 }
 
 .footer-simple {
@@ -1515,10 +1578,12 @@ BOOKING CTA SECTION
     transition: var(--transition);
     box-shadow: 0 8px 30px rgba(37,211,102,0.3);
     animation: whatsappPulse 3s infinite;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .whatsapp-float:hover {
-    transform: scale(1.1);
+    transform: scale(1.1) translateZ(0);
     box-shadow: 0 12px 40px rgba(37,211,102,0.5);
     animation: none;
 }
@@ -1646,8 +1711,9 @@ BOOKING CTA SECTION
         position: fixed;
         top: 0;
         right: -100%;
-        width: 320px;
+        width: min(320px, 85vw);
         height: 100vh;
+        height: 100dvh;
         background: var(--bg-white);
         flex-direction: column;
         padding: 100px 40px;
@@ -1655,6 +1721,8 @@ BOOKING CTA SECTION
         transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         z-index: 99;
         box-shadow: -20px 0 60px rgba(26,26,46,0.1);
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
     }
 
     .nav-menu.active {
@@ -1679,6 +1747,11 @@ BOOKING CTA SECTION
 }
 
 @media (max-width: 768px) {
+    /* FIXED: Disable ALL problematic effects on mobile */
+    .hero-noise {
+        display: none !important;
+    }
+
     .hero-title {
         font-size: 36px;
     }
@@ -1735,15 +1808,30 @@ BOOKING CTA SECTION
     }
 
     .section-container {
-        padding: 0 24px;
+        padding: 0 20px;
     }
 
     .nav-container {
-        padding: 0 24px;
+        padding: 0 20px;
     }
 
     .booking-buttons {
         flex-direction: column;
+    }
+
+    /* FIXED: Reduce padding for mobile */
+    .hero {
+        padding: 60px 20px 80px;
+    }
+
+    .about-section,
+    .services-section,
+    .contact-section {
+        padding: 80px 0;
+    }
+
+    .booking-cta-section {
+        padding: 80px 0;
     }
 }
 
@@ -1755,5 +1843,87 @@ BOOKING CTA SECTION
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .hero-noise {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   NUCLEAR MOBILE SCROLL FIX
+   ============================================ */
+
+/* Force no horizontal scroll at every level */
+html,
+body {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* Fix hero performance on mobile */
+@media (max-width: 1024px) {
+    .hero {
+        overflow: hidden !important;
+        transform: none !important;
+        will-change: auto !important;
+        contain: none !important;
+    }
+
+    .hero-bg-pattern {
+        display: none !important;
+    }
+
+    .hero-noise {
+        display: none !important;
+    }
+
+    /* Remove all will-change on mobile to free GPU */
+    * {
+        will-change: auto !important;
+    }
+
+    /* Remove all transitions that cause jank */
+    .navbar {
+        transition: none !important;
+        will-change: auto !important;
+        transform: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .hero-image img {
+        transition: none !important;
+    }
+
+    /* Stop any element overflowing */
+    .hero-image-wrapper,
+    .hero-image-frame,
+    .hero-image,
+    .hero-content,
+    .section-container,
+    .about-grid,
+    .services-grid,
+    .contact-grid {
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    /* Frame corners can cause overflow */
+    .frame-corner {
+        display: none !important;
+    }
+
+    /* Fix about image overflow */
+    .about-image-frame {
+        overflow: hidden !important;
+        max-width: 100% !important;
+    }
+
+    /* Fix frame accent overflow */
+    .frame-accent {
+        display: none !important;
     }
 }
