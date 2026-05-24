@@ -43,7 +43,6 @@ class MobileMenu {
         this.navMenu.classList.add('active');
         this.overlay?.classList.add('active');
         document.body.style.overflow = 'hidden';
-        // FIXED: Prevent horizontal scroll lock from breaking
         document.body.style.touchAction = 'pan-y';
     }
 
@@ -57,14 +56,13 @@ class MobileMenu {
 }
 
 // ============================================
-// NAVBAR SCROLL EFFECT — FIXED: Use passive listener + RAF
+// NAVBAR SCROLL EFFECT
 // ============================================
 
 class NavbarScroll {
     constructor() {
         this.navbar = document.getElementById('navbar');
         this.lastScroll = 0;
-        this.ticking = false;
 
         this.init();
     }
@@ -72,19 +70,7 @@ class NavbarScroll {
     init() {
         if (!this.navbar) return;
 
-        // FIXED: Use passive event listener for better scroll performance
-        window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
-    }
-
-    handleScroll() {
-        // FIXED: Use requestAnimationFrame to prevent scroll jank
-        if (!this.ticking) {
-            window.requestAnimationFrame(() => {
-                this.updateNavbar();
-                this.ticking = false;
-            });
-            this.ticking = true;
-        }
+        window.addEventListener('scroll', () => this.updateNavbar(), { passive: true });
     }
 
     updateNavbar() {
@@ -97,6 +83,39 @@ class NavbarScroll {
         }
 
         this.lastScroll = currentScroll;
+    }
+}
+
+// ============================================
+// STICKY MOBILE BAR
+// ============================================
+
+class StickyMobileBar {
+    constructor() {
+        this.bar = document.getElementById('stickyMobileBar');
+        this.hero = document.querySelector('.hero');
+        this.isVisible = false;
+
+        this.init();
+    }
+
+    init() {
+        if (!this.bar || !this.hero) return;
+
+        window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
+    }
+
+    handleScroll() {
+        const heroBottom = this.hero.getBoundingClientRect().bottom;
+        const shouldShow = heroBottom < 0;
+
+        if (shouldShow && !this.isVisible) {
+            this.bar.classList.add('active');
+            this.isVisible = true;
+        } else if (!shouldShow && this.isVisible) {
+            this.bar.classList.remove('active');
+            this.isVisible = false;
+        }
     }
 }
 
@@ -132,32 +151,19 @@ class SmoothScroll {
 }
 
 // ============================================
-// ACTIVE NAV LINK ON SCROLL — FIXED: Passive + RAF
+// ACTIVE NAV LINK ON SCROLL
 // ============================================
 
 class ActiveNavLink {
     constructor() {
         this.sections = document.querySelectorAll('section[id]');
         this.navLinks = document.querySelectorAll('.nav-menu a');
-        this.ticking = false;
 
         this.init();
     }
 
     init() {
-        // FIXED: Passive listener for performance
-        window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
-    }
-
-    handleScroll() {
-        // FIXED: RAF to prevent layout thrashing
-        if (!this.ticking) {
-            window.requestAnimationFrame(() => {
-                this.updateActiveLink();
-                this.ticking = false;
-            });
-            this.ticking = true;
-        }
+        window.addEventListener('scroll', () => this.updateActiveLink(), { passive: true });
     }
 
     updateActiveLink() {
@@ -272,22 +278,25 @@ class FormAnimations {
 }
 
 // ============================================
-// BACK TO TOP
+// NEWSLETTER FORM
 // ============================================
 
-class BackToTop {
+class NewsletterForm {
     constructor() {
-        this.button = document.querySelector('.back-to-top');
-
+        this.form = document.querySelector('.newsletter-form');
         this.init();
     }
 
     init() {
-        if (!this.button) return;
+        if (!this.form) return;
 
-        this.button.addEventListener('click', (e) => {
+        this.form.addEventListener('submit', (e) => {
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const input = this.form.querySelector('input');
+            if (input.value) {
+                input.value = '';
+                alert('Thank you for subscribing! You\'ll hear from us soon.');
+            }
         });
     }
 }
@@ -299,11 +308,12 @@ class BackToTop {
 document.addEventListener('DOMContentLoaded', () => {
     new MobileMenu();
     new NavbarScroll();
+    new StickyMobileBar();
     new SmoothScroll();
     new ActiveNavLink();
     new ContactForm();
     new FormAnimations();
-    new BackToTop();
+    new NewsletterForm();
 
     document.body.classList.add('loaded');
 });
