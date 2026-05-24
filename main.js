@@ -272,50 +272,6 @@ class ContactForm {
     }
 }
 
-// ============================================
-// SHOW MORE PRODUCTS
-// ============================================
-
-class ShopShowMore {
-    constructor() {
-        this.btn = document.getElementById('showMoreBtn');
-        this.hiddenProducts = document.getElementById('hiddenProducts');
-
-        this.init();
-    }
-
-    init() {
-        if (!this.btn || !this.hiddenProducts) return;
-
-        this.btn.addEventListener('click', () => this.toggle());
-    }
-
-    toggle() {
-        const isShowing = this.hiddenProducts.classList.contains('show');
-
-        if (isShowing) {
-            this.hiddenProducts.classList.remove('show');
-            this.btn.classList.remove('active');
-            this.btn.querySelector('.show-more-text').textContent = 'Show More Products';
-
-            document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-            this.hiddenProducts.classList.add('show');
-            this.btn.classList.add('active');
-            this.btn.querySelector('.show-more-text').textContent = 'Show Less';
-
-            setTimeout(() => {
-                const newCards = this.hiddenProducts.querySelectorAll('.product-card');
-                newCards.forEach((card, index) => {
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, index * 100);
-                });
-            }, 50);
-        }
-    }
-}
 
 // ============================================
 // PARALLAX EFFECT
