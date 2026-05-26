@@ -1,319 +1,330 @@
 // ============================================
-// IVORIA — LUXURY BEAUTY SALON JAVASCRIPT
-// Premium Hair, Beauty & Nail Experience
-// Nairobi, Kenya
+// KENYA PUBLIC HOLIDAYS - CALENDAR-BASED (2026+)
 // ============================================
+
+// Fixed-date holidays for Kenya
+const KENYA_FIXED_HOLIDAYS = [
+    { month: 0, day: 1, name: "New Year's Day" },
+    { month: 4, day: 1, name: "Labour Day" },
+    { month: 5, day: 1, name: "Madaraka Day" },
+    { month: 9, day: 10, name: "Mazingira Day" },
+    { month: 9, day: 20, name: "Mashujaa Day" },
+    { month: 11, day: 12, name: "Jamhuri Day" },
+    { month: 11, day: 25, name: "Christmas Day" },
+    { month: 11, day: 26, name: "Boxing Day" },
+];
+
+function getEasterDate(year) {
+    // Anonymous Gregorian algorithm
+    const a = year % 19;
+    const b = Math.floor(year / 100);
+    const c = year % 100;
+    const d = Math.floor(b / 4);
+    const e = b % 4;
+    const f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4);
+    const k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7;
+    const m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const month = Math.floor((h + l - 7 * m + 114) / 31) - 1; // 0-based month
+    const day = ((h + l - 7 * m + 114) % 31) + 1;
+    return { month, day };
+}
+
+function generateKenyaHolidays(year) {
+    const holidays = [];
+
+    // Fixed-date holidays
+    KENYA_FIXED_HOLIDAYS.forEach(h => {
+        holidays.push({
+            month: h.month,
+            day: h.day,
+            name: h.name
+        });
+    });
+
+    // Easter-based holidays
+    const easter = getEasterDate(year);
+    holidays.push({
+        month: easter.month,
+        day: easter.day - 2,
+        name: "Good Friday"
+    });
+    holidays.push({
+        month: easter.month,
+        day: easter.day + 1,
+        name: "Easter Monday"
+    });
+
+    // Sort by date
+    holidays.sort((a, b) => {
+        if (a.month !== b.month) return a.month - b.month;
+        return a.day - b.day;
+    });
+
+    return holidays;
+}
+
+function getHolidayMapForYear(year) {
+    const holidays = generateKenyaHolidays(year);
+    const map = new Map();
+    holidays.forEach(h => {
+        const dateStr = `${year}-${String(h.month + 1).padStart(2, '0')}-${String(h.day).padStart(2, '0')}`;
+        map.set(dateStr, h.name);
+    });
+    return map;
+}
+
+// Pre-generate holiday maps for 2026, 2027, 2028
+const HOLIDAY_MAPS = {
+    2026: getHolidayMapForYear(2026),
+    2027: getHolidayMapForYear(2027),
+    2028: getHolidayMapForYear(2028),
+};
+
+function isPublicHoliday(dateStr) {
+    const [year] = dateStr.split('-');
+    const holidayMap = HOLIDAY_MAPS[year];
+    if (!holidayMap) return false;
+    return holidayMap.has(dateStr);
+}
+
+function getHolidayName(dateStr) {
+    const [year] = dateStr.split('-');
+    const holidayMap = HOLIDAY_MAPS[year];
+    if (!holidayMap) return 'Public Holiday';
+    return holidayMap.get(dateStr) || 'Public Holiday';
+}
 
 // ============================================
 // MOBILE MENU
 // ============================================
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const mobileMenuClose = document.getElementById('mobileMenuClose');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileLinks = document.querySelectorAll('.mobile-link');
 
-class MobileMenu {
-    constructor() {
-        this.hamburger = document.getElementById('hamburger');
-        this.navMenu = document.getElementById('navMenu');
-        this.overlay = document.getElementById('mobileOverlay');
-        this.navLinks = this.navMenu?.querySelectorAll('a');
-
-        this.init();
-    }
-
-    init() {
-        if (!this.hamburger || !this.navMenu) return;
-
-        this.hamburger.addEventListener('click', () => this.toggle());
-        this.overlay?.addEventListener('click', () => this.close());
-
-        this.navLinks?.forEach(link => {
-            link.addEventListener('click', () => this.close());
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.close();
-        });
-    }
-
-    toggle() {
-        const isOpen = this.navMenu.classList.contains('active');
-        isOpen ? this.close() : this.open();
-    }
-
-    open() {
-        this.hamburger.classList.add('active');
-        this.navMenu.classList.add('active');
-        this.overlay?.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        document.body.style.touchAction = 'pan-y';
-    }
-
-    close() {
-        this.hamburger.classList.remove('active');
-        this.navMenu.classList.remove('active');
-        this.overlay?.classList.remove('active');
-        document.body.style.overflow = '';
-        document.body.style.touchAction = '';
-    }
+function openMobileMenu() {
+    mobileMenu.classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
+
+function closeMobileMenu() {
+    mobileMenu.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+mobileMenuBtn.addEventListener('click', openMobileMenu);
+mobileMenuClose.addEventListener('click', closeMobileMenu);
+
+mobileLinks.forEach(link => {
+    link.addEventListener('click', closeMobileMenu);
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+        closeMobileMenu();
+    }
+});
 
 // ============================================
 // NAVBAR SCROLL EFFECT
 // ============================================
+const navbar = document.getElementById('navbar');
 
-class NavbarScroll {
-    constructor() {
-        this.navbar = document.getElementById('navbar');
-        this.lastScroll = 0;
-
-        this.init();
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
     }
-
-    init() {
-        if (!this.navbar) return;
-
-        window.addEventListener('scroll', () => this.updateNavbar(), { passive: true });
-    }
-
-    updateNavbar() {
-        const currentScroll = window.pageYOffset;
-
-        if (currentScroll > 50) {
-            this.navbar.classList.add('scrolled');
-        } else {
-            this.navbar.classList.remove('scrolled');
-        }
-
-        this.lastScroll = currentScroll;
-    }
-}
-
-// ============================================
-// STICKY MOBILE BAR
-// ============================================
-
-class StickyMobileBar {
-    constructor() {
-        this.bar = document.getElementById('stickyMobileBar');
-        this.hero = document.querySelector('.hero');
-        this.isVisible = false;
-
-        this.init();
-    }
-
-    init() {
-        if (!this.bar || !this.hero) return;
-
-        window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
-    }
-
-    handleScroll() {
-        const heroBottom = this.hero.getBoundingClientRect().bottom;
-        const shouldShow = heroBottom < 0;
-
-        if (shouldShow && !this.isVisible) {
-            this.bar.classList.add('active');
-            this.isVisible = true;
-        } else if (!shouldShow && this.isVisible) {
-            this.bar.classList.remove('active');
-            this.isVisible = false;
-        }
-    }
-}
-
-// ============================================
-// SMOOTH SCROLL FOR ANCHOR LINKS
-// ============================================
-
-class SmoothScroll {
-    constructor() {
-        this.init();
-    }
-
-    init() {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', (e) => {
-                const href = anchor.getAttribute('href');
-                if (href === '#') return;
-
-                const target = document.querySelector(href);
-                if (target) {
-                    e.preventDefault();
-                    const offset = 90;
-                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    }
-}
+});
 
 // ============================================
 // ACTIVE NAV LINK ON SCROLL
 // ============================================
+const sections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.nav-link[data-section]');
 
-class ActiveNavLink {
-    constructor() {
-        this.sections = document.querySelectorAll('section[id]');
-        this.navLinks = document.querySelectorAll('.nav-menu a');
+function updateActiveNav() {
+    let current = 'home';
+    const scrollPos = window.scrollY + 200;
 
-        this.init();
-    }
-
-    init() {
-        window.addEventListener('scroll', () => this.updateActiveLink(), { passive: true });
-    }
-
-    updateActiveLink() {
-        const scrollPosition = window.pageYOffset + 180;
-
-        this.sections.forEach(section => {
+    if (window.scrollY < 100) {
+        current = 'home';
+    } else {
+        sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const sectionId = section.getAttribute('id');
-
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                this.navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${sectionId}`) {
-                        link.classList.add('active');
-                    }
-                });
+            const sectionHeight = section.clientHeight;
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
             }
         });
     }
-}
 
-// ============================================
-// CONTACT FORM
-// ============================================
-
-class ContactForm {
-    constructor() {
-        this.form = document.getElementById('contactForm');
-        this.submitBtn = document.getElementById('submitBtn');
-
-        this.init();
-    }
-
-    init() {
-        if (!this.form) return;
-
-        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-
-        const phoneInput = document.getElementById('phone');
-        phoneInput?.addEventListener('input', (e) => this.formatPhone(e));
-    }
-
-    formatPhone(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.startsWith('0')) {
-            value = '254' + value.slice(1);
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-section') === current) {
+            link.classList.add('active');
         }
-        if (value.startsWith('7') && value.length === 9) {
-            value = '254' + value;
+    });
+}
+
+window.addEventListener('scroll', updateActiveNav);
+window.addEventListener('load', updateActiveNav);
+
+// ============================================
+// BOOKING VALIDATION
+// ============================================
+const OPENING_HOUR = 9;   // 9:00 AM
+const CLOSING_HOUR = 20;  // 8:00 PM
+
+function getNairobiTime() {
+    const now = new Date();
+    const nairobiTime = new Date(now.toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }));
+    return nairobiTime;
+}
+
+function validateBooking(dateStr, timeStr) {
+    const selectedDate = new Date(dateStr + 'T00:00:00');
+    const [hours, minutes] = timeStr.split(':').map(Number);
+
+    const dayOfWeek = selectedDate.getDay(); // 0 = Sunday, 6 = Saturday
+
+    // Check if Sunday
+    if (dayOfWeek === 0) {
+        return {
+            valid: false,
+            message: 'We are closed on Sundays. Please select Monday - Saturday.'
+        };
+    }
+
+    // Check if public holiday
+    if (isPublicHoliday(dateStr)) {
+        return {
+            valid: false,
+            message: `We are closed on ${getHolidayName(dateStr)}. Please select another date.`
+        };
+    }
+
+    // Check if within working hours (9 AM - 8 PM)
+    if (hours < OPENING_HOUR) {
+        return {
+            valid: false,
+            message: `Our salon opens at 9:00 AM. Please select a time from 9:00 AM onwards.`
+        };
+    }
+
+    if (hours >= CLOSING_HOUR) {
+        return {
+            valid: false,
+            message: `Our salon closes at 8:00 PM. Please select a time before 8:00 PM.`
+        };
+    }
+
+    // Check if selected time is in the past for today
+    const now = getNairobiTime();
+    const todayStr = now.toISOString().split('T')[0];
+
+    if (dateStr === todayStr) {
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        if (hours < currentHour || (hours === currentHour && minutes <= currentMinute)) {
+            return {
+                valid: false,
+                message: 'This time has already passed. Please select a future time.'
+            };
         }
-        e.target.value = value;
     }
 
-    async handleSubmit(e) {
-        e.preventDefault();
+    // Check if date is in the past
+    const selectedDateOnly = new Date(dateStr + 'T00:00:00');
+    const todayDateOnly = new Date(todayStr + 'T00:00:00');
 
-        if (!this.submitBtn) return;
-
-        this.submitBtn.classList.add('loading');
-        this.submitBtn.disabled = true;
-
-        try {
-            await this.simulateSubmit();
-
-            this.submitBtn.classList.remove('loading');
-            this.submitBtn.classList.add('success');
-
-            this.form.reset();
-
-            setTimeout(() => {
-                this.submitBtn.classList.remove('success');
-                this.submitBtn.disabled = false;
-            }, 3500);
-
-        } catch (error) {
-            console.error('Form submission error:', error);
-            this.submitBtn.classList.remove('loading');
-            this.submitBtn.disabled = false;
-            alert('Something went wrong. Please try again or WhatsApp us directly.');
-        }
+    if (selectedDateOnly < todayDateOnly) {
+        return {
+            valid: false,
+            message: 'This date has already passed. Please select a future date.'
+        };
     }
 
-    simulateSubmit() {
-        return new Promise(resolve => setTimeout(resolve, 1800));
-    }
+    return { valid: true };
 }
 
 // ============================================
-// FORM INPUT ANIMATIONS
+// SET MIN DATE FOR BOOKING
 // ============================================
-
-class FormAnimations {
-    constructor() {
-        this.inputs = document.querySelectorAll('.form-group input, .form-group textarea, .form-group select');
-        this.init();
-    }
-
-    init() {
-        this.inputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                input.parentElement.classList.add('focused');
-            });
-
-            input.addEventListener('blur', () => {
-                if (!input.value) {
-                    input.parentElement.classList.remove('focused');
-                }
-            });
-        });
-    }
+const bookingDateInput = document.getElementById('bookingDate');
+if (bookingDateInput) {
+    const today = getNairobiTime();
+    const todayStr = today.toISOString().split('T')[0];
+    bookingDateInput.setAttribute('min', todayStr);
 }
 
 // ============================================
-// NEWSLETTER FORM
+// CONTACT FORM - SEND TO WHATSAPP
 // ============================================
+const contactForm = document.getElementById('contactForm');
+const bookingError = document.getElementById('bookingError');
 
-class NewsletterForm {
-    constructor() {
-        this.form = document.querySelector('.newsletter-form');
-        this.init();
+contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Clear previous errors
+    bookingError.style.display = 'none';
+    bookingError.textContent = '';
+
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const service = document.getElementById('service').value;
+    const bookingDate = document.getElementById('bookingDate').value;
+    const bookingTime = document.getElementById('bookingTime').value;
+    const message = document.getElementById('message').value.trim();
+
+    // Validate all fields present
+    if (!name || !phone || !service || !bookingDate || !bookingTime) {
+        bookingError.textContent = 'Please fill in all required fields.';
+        bookingError.style.display = 'flex';
+        return;
     }
 
-    init() {
-        if (!this.form) return;
-
-        this.form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const input = this.form.querySelector('input');
-            if (input.value) {
-                input.value = '';
-                alert('Thank you for subscribing! You\'ll hear from us soon.');
-            }
-        });
+    // Validate booking date and time
+    const validation = validateBooking(bookingDate, bookingTime);
+    if (!validation.valid) {
+        bookingError.textContent = validation.message;
+        bookingError.style.display = 'flex';
+        return;
     }
-}
 
-// ============================================
-// INITIALIZATION
-// ============================================
+    // Format date and time for WhatsApp
+    const dateObj = new Date(bookingDate + 'T00:00:00');
+    const formattedDate = dateObj.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
 
-document.addEventListener('DOMContentLoaded', () => {
-    new MobileMenu();
-    new NavbarScroll();
-    new StickyMobileBar();
-    new SmoothScroll();
-    new ActiveNavLink();
-    new ContactForm();
-    new FormAnimations();
-    new NewsletterForm();
+    const timeObj = new Date(`2000-01-01T${bookingTime}`);
+    const formattedTime = timeObj.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
 
-    document.body.classList.add('loaded');
+    let whatsappText = `Hi Ivoria, I'd like to book an appointment.\n\n`;
+    whatsappText += `*Name:* ${name}\n`;
+    whatsappText += `*Phone:* ${phone}\n`;
+    whatsappText += `*Service:* ${service}\n`;
+    whatsappText += `*Date:* ${formattedDate}\n`;
+    whatsappText += `*Time:* ${formattedTime}\n`;
+    if (message) {
+        whatsappText += `*Notes:* ${message}\n`;
+    }
+
+    const encodedText = encodeURIComponent(whatsappText);
+    window.open(`https://wa.me/254712345678?text=${encodedText}`, '_blank');
 });
